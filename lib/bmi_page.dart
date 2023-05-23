@@ -20,23 +20,41 @@ class _BMIPageState extends State<BMIPage> {
   Gender? selectedGender;
   Height selectedHeight = Height.feet;
   Weight selectedWeight = Weight.kg;
-  TextEditingController heightFeetController = TextEditingController();
-  TextEditingController heightInchesController = TextEditingController();
-  TextEditingController heightCmController = TextEditingController();
+  TextEditingController heightCM = TextEditingController();
+  TextEditingController weightKG = TextEditingController();
+  DateTime currentDate = DateTime.now();
 
-  TextEditingController weightController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    void displayCalendar() async {
+      DateTime? newDate = await showDatePicker(
+          context: context,
+          initialDate: currentDate,
+          firstDate: DateTime(1960),
+          lastDate: currentDate);
+
+      if (newDate == null) {
+        return;
+      } else {
+        setState(() {
+          currentDate = newDate;
+        });
+      }
+    }
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(25),
             child: Column(
               // mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                const SizedBox(
+                  height: 15,
+                ),
                 Text(
                   'BMI Calculator',
                   style: kTextHeadingTheme,
@@ -47,6 +65,9 @@ class _BMIPageState extends State<BMIPage> {
                 Text(
                   'Welcome! Let\'s assess your current BMI.',
                   style: GoogleFonts.poppins(),
+                ),
+                const SizedBox(
+                  height: 30,
                 ),
                 SegmentedButton(
                   segments: const [
@@ -76,115 +97,19 @@ class _BMIPageState extends State<BMIPage> {
                     ),
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text('Height'),
-                    Row(
-                      children: [
-                        OutlinedButton(
-                          onPressed: () {
-                            setState(() {
-                              selectedHeight = Height.feet;
-                            });
-                            debugPrint('$selectedHeight');
-                          },
-                          style: ButtonStyle(
-                            backgroundColor: selectedHeight == Height.feet
-                                ? const MaterialStatePropertyAll(
-                                    Color(0xff768ba7))
-                                : const MaterialStatePropertyAll(Colors.white),
-                          ),
-                          child: Text(
-                            'feet',
-                            style: TextStyle(
-                                color: selectedHeight == Height.feet
-                                    ? Colors.white
-                                    : const Color(0xffb3bdcc)),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 15,
-                        ),
-                        OutlinedButton(
-                          onPressed: () {
-                            setState(() {
-                              selectedHeight = Height.meter;
-                            });
-                            debugPrint('$selectedHeight');
-                          },
-                          style: ButtonStyle(
-                            backgroundColor: selectedHeight == Height.meter
-                                ? const MaterialStatePropertyAll(
-                                    Color(0xff768ba7))
-                                : const MaterialStatePropertyAll(Colors.white),
-                          ),
-                          child: Text(
-                            'meter',
-                            style: TextStyle(
-                                color: selectedHeight == Height.meter
-                                    ? Colors.white
-                                    : const Color(0xffb3bdcc)),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                const SizedBox(
+                  height: 30,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 50,
-                      height: 60,
-                      child: TextField(
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20),
-                        keyboardType: TextInputType.number,
-                        textInputAction: TextInputAction.next,
-                        controller: heightFeetController,
-                        decoration: const InputDecoration(
-                            fillColor: Color(0xfff7f9fc),
-                            filled: true,
-                            border: OutlineInputBorder()),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    const Text('feet'),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    SizedBox(
-                      width: 50,
-                      height: 60,
-                      child: TextField(
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20),
-                        keyboardType: TextInputType.number,
-                        textInputAction: TextInputAction.next,
-                        controller: heightInchesController,
-                        decoration: const InputDecoration(
-                            fillColor: Color(0xfff7f9fc),
-                            filled: true,
-                            border: OutlineInputBorder()),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    const Text('inches'),
-                  ],
+                Text(
+                  'Height',
+                  style: kTextHeadingTheme,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     SizedBox(
-                      width: 50,
+                      width: 90,
                       height: 60,
                       child: TextField(
                         textAlign: TextAlign.center,
@@ -192,7 +117,7 @@ class _BMIPageState extends State<BMIPage> {
                             fontWeight: FontWeight.bold, fontSize: 20),
                         keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.next,
-                        controller: heightCmController,
+                        controller: heightCM,
                         decoration: const InputDecoration(
                             fillColor: Color(0xfff7f9fc),
                             filled: true,
@@ -202,80 +127,77 @@ class _BMIPageState extends State<BMIPage> {
                     const SizedBox(
                       width: 10,
                     ),
-                    const Icon(
-                      Icons.circle,
-                      size: 10,
+                    const Text('cm')
+                  ],
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                Text(
+                  'Weight',
+                  style: kTextHeadingTheme,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    SizedBox(
+                      width: 90,
+                      height: 60,
+                      child: TextField(
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20),
+                        keyboardType: TextInputType.number,
+                        textInputAction: TextInputAction.next,
+                        controller: weightKG,
+                        decoration: const InputDecoration(
+                            fillColor: Color(0xfff7f9fc),
+                            filled: true,
+                            border: OutlineInputBorder()),
+                      ),
                     ),
                     const SizedBox(
                       width: 10,
-                    )
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text('Weight'),
-                    Row(
-                      children: [
-                        OutlinedButton(
-                          onPressed: () {
-                            setState(() {
-                              selectedWeight = Weight.kg;
-                            });
-                            debugPrint('$selectedHeight');
-                          },
-                          style: ButtonStyle(
-                            backgroundColor: selectedWeight == Weight.kg
-                                ? const MaterialStatePropertyAll(
-                                    Color(0xff768ba7))
-                                : const MaterialStatePropertyAll(Colors.white),
-                          ),
-                          child: Text(
-                            'kg',
-                            style: TextStyle(
-                                color: selectedWeight == Weight.kg
-                                    ? Colors.white
-                                    : const Color(0xffb3bdcc)),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 15,
-                        ),
-                        OutlinedButton(
-                          onPressed: () {
-                            setState(() {
-                              selectedWeight = Weight.lb;
-                            });
-                            debugPrint('$selectedHeight');
-                          },
-                          style: ButtonStyle(
-                            backgroundColor: selectedWeight == Weight.lb
-                                ? const MaterialStatePropertyAll(
-                                    Color(0xff768ba7))
-                                : const MaterialStatePropertyAll(Colors.white),
-                          ),
-                          child: Text(
-                            'lb',
-                            style: TextStyle(
-                                color: selectedWeight == Weight.lb
-                                    ? Colors.white
-                                    : const Color(0xffb3bdcc)),
-                          ),
-                        ),
-                      ],
                     ),
+                    const Text('kg')
                   ],
                 ),
+                const SizedBox(
+                  height: 30,
+                ),
+                Text(
+                  'Date of Birth',
+                  style: kTextHeadingTheme,
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                Center(
+                    child: Text(
+                  '${currentDate.month}/${currentDate.day}/${currentDate.year}',
+                  style: GoogleFonts.poppins(fontSize: 18),
+                )),
+                const SizedBox(
+                  height: 20,
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    displayCalendar();
+                  },
+                  style: ElevatedButton.styleFrom(backgroundColor: kFabBgColor),
+                  child: Text(
+                    'Open Calendar',
+                    style: kFabTextColor,
+                  ),
+                )
               ],
             ),
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          debugPrint(
-              '${heightFeetController.text} ${heightInchesController.text}');
-        },
+        onPressed: () {},
         label: Row(
           children: [
             Text(
